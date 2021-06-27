@@ -1,0 +1,30 @@
+#!/bin/bash
+
+fichier2='Myip.txt';
+grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' projet.log > $fichier2
+Mykey='fa2da98d20d5ba360434132d812504c5e43846596e90a1e28221df473068348ccb70f52a0edb8463'
+
+for ip in  $(cat $fichier2);
+do 
+curl -G https://api.abuseipdb.com/api/v2/check \--data-urlencode "ipAddress=$ip" \-d maxAgeInDays=90 \-d verbose \-H "Key: $Mykey" \-H "Accept: application/json"> iss.json
+t1=$(jq .data.abuseConfidenceScore iss.json)
+if [ $t1 -gt 50 ]
+then
+t2=$(jq .data.countryName iss.json)
+t3=$(jq .data.totalReports iss.json)
+t4=$(jq .data.isWhitelisted iss.json)
+if [ $t4 != false ]
+then
+t4="Non";
+else
+t4="Oui"
+fi
+heure=$(date +%H':'%M)
+jour=$(date +%Y'/'%m'/'%d)
+echo "-Date :$jour $heure Score :$t1 Adresse IP :$ip -Pays:$t2 -Nombre de Signal:$t3 -Liste blanche:$t4">>rapport.txt;
+sudo iptables -A INPUT -s $ip -j DROP
+# permet d'envoyer un email avec piece joint rapport.txt
+# mutt -s "Rapport Quotidien" -a rapport.txt mohamed.abdallaoui@eidia.ueuromed.org< message.txt
+fi
+done
+
