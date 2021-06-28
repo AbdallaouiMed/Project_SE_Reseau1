@@ -16,4 +16,4 @@ Pour bien utiliser se script il faut disposer des commandes suivante :
 - jq : permet de manipuler des fichier json pour recuperer des information celon une ou plusieure clefs
 - sudo IPtables : Il faut donner la permission en tant que super utilisateur pour le blocages des addresses IP   
 - mutt : Pour envoyer des email  
-En plus dans le fichier message.txt vous pouvez configurer le corps du  message qui serra envoyer ladministarateur 
+En plus dans le fichier message.txt vous pouvez configurer le corps du  message qui serra envoyer a ladministarateur 
